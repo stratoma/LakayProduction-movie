@@ -1,4 +1,5 @@
 import { promises as fs } from "fs";
+import os from "os";
 import path from "path";
 import { placeholderMovies } from "@/lib/placeholder-data";
 import type { Movie, RSVP } from "@/lib/types";
@@ -9,8 +10,16 @@ type LocalDB = {
 };
 
 const dbPath = path.join(process.cwd(), "data", "local-db.json");
+const tmpDbPath = path.join(os.tmpdir(), "lakay-production-local-db.json");
 
 async function readDB(): Promise<LocalDB> {
+  try {
+    const raw = await fs.readFile(tmpDbPath, "utf8");
+    return JSON.parse(raw) as LocalDB;
+  } catch {
+    // Continue to the committed seed data when no writable runtime copy exists yet.
+  }
+
   try {
     const raw = await fs.readFile(dbPath, "utf8");
     return JSON.parse(raw) as LocalDB;
@@ -22,8 +31,22 @@ async function readDB(): Promise<LocalDB> {
 }
 
 async function writeDB(db: LocalDB) {
-  await fs.mkdir(path.dirname(dbPath), { recursive: true });
-  await fs.writeFile(dbPath, JSON.stringify(db, null, 2));
+  const payload = JSON.stringify(db, null, 2);
+
+  try {
+    await fs.mkdir(path.dirname(dbPath), { recursive: true });
+    await fs.writeFile(dbPath, payload);
+    return;
+  } catch {
+    // Vercel's deployed filesystem is read-only except for /tmp.
+  }
+
+  try {
+    await fs.mkdir(path.dirname(tmpDbPath), { recursive: true });
+    await fs.writeFile(tmpDbPath, payload);
+  } catch {
+    // Do not let local fallback storage failures block RSVP confirmation.
+  }
 }
 
 export async function getLocalMovies(activeOnly = false) {
