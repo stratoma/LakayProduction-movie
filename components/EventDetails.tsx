@@ -1,5 +1,5 @@
 const details = [
-  ["Date", "Saturday, June 27, 2026"],
+  ["Date", "Friday, June 26, 2026"],
   ["Time", "7:30 PM"],
   ["Location", "Chez Les Louis"],
   ["NB", "BYO Beverage / Blanket"]
