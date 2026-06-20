@@ -39,7 +39,7 @@ export default async function AdminPage() {
 
         <section className="retro-border rounded-2xl bg-lakayYellow p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-display text-3xl font-black uppercase">Vote count</h2>
+            <h2 className="font-display text-3xl font-black uppercase">RSVP & vote count</h2>
             <CSVExportButton rsvps={rsvps} />
           </div>
           <AdminStats movies={movies} rsvps={rsvps} />

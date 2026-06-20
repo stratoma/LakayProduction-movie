@@ -11,13 +11,16 @@ type LocalDB = {
 
 const dbPath = path.join(process.cwd(), "data", "local-db.json");
 const tmpDbPath = path.join(os.tmpdir(), "lakay-production-local-db.json");
+const isVercel = process.env.VERCEL === "1" || process.env.VERCEL === "true";
 
 async function readDB(): Promise<LocalDB> {
-  try {
-    const raw = await fs.readFile(tmpDbPath, "utf8");
-    return JSON.parse(raw) as LocalDB;
-  } catch {
-    // Continue to the committed seed data when no writable runtime copy exists yet.
+  if (isVercel) {
+    try {
+      const raw = await fs.readFile(tmpDbPath, "utf8");
+      return JSON.parse(raw) as LocalDB;
+    } catch {
+      // Continue to the committed seed data when no writable runtime copy exists yet.
+    }
   }
 
   try {
