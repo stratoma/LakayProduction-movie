@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import {
   addLocalMovie,
+  clearLocalRSVPs,
   deleteLocalMovie,
   updateLocalMovie,
   updateLocalRSVPStatus
@@ -121,6 +122,18 @@ export async function updateRSVPStatus(formData: FormData) {
     return;
   }
   await supabase.from("rsvps").update({ attendance_status }).eq("id", id);
+  revalidatePath("/admin");
+}
+
+export async function clearRSVPData() {
+  const supabase = await requireAdmin();
+  if (!supabase) {
+    await clearLocalRSVPs();
+    revalidatePath("/admin");
+    return;
+  }
+
+  await supabase.from("rsvps").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   revalidatePath("/admin");
 }
 

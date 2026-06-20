@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
-import { deleteMovie, signOutAdmin, updateRSVPStatus } from "@/app/actions/admin";
+import { clearRSVPData, deleteMovie, signOutAdmin, updateRSVPStatus } from "@/app/actions/admin";
 import { AdminMovieForm } from "@/components/AdminMovieForm";
 import { AdminStats } from "@/components/AdminStats";
+import { ClearRSVPButton } from "@/components/ClearRSVPButton";
 import { CSVExportButton } from "@/components/CSVExportButton";
 import { getAdminMovies, getRSVPs } from "@/lib/data";
 import { createClient, hasSupabaseEnv } from "@/lib/supabase/server";
@@ -40,7 +41,10 @@ export default async function AdminPage() {
         <section className="retro-border rounded-2xl bg-lakayYellow p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-display text-3xl font-black uppercase">RSVP & vote count</h2>
-            <CSVExportButton rsvps={rsvps} />
+            <div className="flex flex-wrap gap-3">
+              <CSVExportButton rsvps={rsvps} />
+              <ClearRSVPButton action={clearRSVPData} disabled={rsvps.length === 0} />
+            </div>
           </div>
           <AdminStats movies={movies} rsvps={rsvps} />
         </section>

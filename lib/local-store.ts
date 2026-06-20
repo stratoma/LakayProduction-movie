@@ -103,3 +103,9 @@ export async function updateLocalRSVPStatus(id: string, attendance_status: RSVP[
   db.rsvps = db.rsvps.map((rsvp) => (rsvp.id === id ? { ...rsvp, attendance_status } : rsvp));
   await writeDB(db);
 }
+
+export async function clearLocalRSVPs() {
+  const db = await readDB();
+  db.rsvps = [];
+  await writeDB(db);
+}
