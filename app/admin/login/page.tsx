@@ -21,9 +21,6 @@ export default async function AdminLogin({
             {messages[params.message] ?? "Please sign in."}
           </p>
         ) : null}
-        <p className="mt-4 rounded-lg border-[3px] border-black bg-lakayTeal/30 p-3 text-sm font-bold">
-          Local login: admin@lakay.local / movie-night
-        </p>
         <label className="mt-5 block">
           <span className="text-sm font-black uppercase">Email</span>
           <input required type="email" name="email" className="mt-2 w-full rounded-xl border-[3px] border-black px-4 py-3 font-bold" />
